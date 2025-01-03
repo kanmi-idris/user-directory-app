@@ -1,57 +1,69 @@
-import { useParams } from 'react-router-dom';
+ import { useParams } from 'react-router-dom';
 import useSWR from 'swr';
 import { fetchUserById } from '../services/api';
 import { User } from '../types/User';
+import ErrorDisplay from './common/ErrorDisplay';
+import Loader from './common/Loader';
+import SectionHeader from './common/SectionHeader';
+import DescriptionItem from './common/DescriptionItem';
 
 const UserDetails = () => {
   const { id } = useParams<{ id: string }>();
   const { data: user, error } = useSWR<User>(`/users/${id}`, () => fetchUserById(Number(id)));
 
   if (error) {
-    return (
-      <div className="flex justify-center items-center h-screen text-red-500">
-        Failed to load user details. Please try again.
-      </div>
-    );
+    return <ErrorDisplay message="Failed to load user details. Please try again." />;
   }
 
   if (!user) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        Loading...
-      </div>
-    );
+    return <Loader />;
   }
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="bg-white shadow-md rounded-lg p-6">
-        <h1 className="text-2xl font-bold mb-4">{user.name}</h1>
+    <main className="container mx-auto p-6">
+      <article className="border border-gray-500 shadow-md rounded-[1rem] p-6 text-gray-100">
+        <header>
+          <h1 className="text-4xl font-semibold mb-6">{user.name}</h1>
+        </header>
         
-        <div className="grid md:grid-cols-2 gap-4">
-          <div>
-            <h2 className="text-xl font-semibold mb-2">Personal Information</h2>
-            <p><strong>Username:</strong> {user.username}</p>
-            <p><strong>Email:</strong> {user.email}</p>
-            <p><strong>Phone:</strong> {user.phone}</p>
-            <p><strong>Website:</strong> {user.website}</p>
-          </div>
+        <div className="grid md:grid-cols-2 gap-10">
+          <section>
+            <SectionHeader title="Personal Information" />
+            <dl className="space-y-2">
+              <DescriptionItem label="Username" value={user.username} />
+              <DescriptionItem label="Email" value={user.email} />
+              <DescriptionItem label="Phone" value={user.phone} />
+              <DescriptionItem label="Website" value={user.website} />
+            </dl>
+          </section>
           
-          <div>
-            <h2 className="text-xl font-semibold mb-2">Address</h2>
-            <p>{user.address.street}, {user.address.suite}</p>
-            <p>{user.address.city}, {user.address.zipcode}</p>
-          </div>
+          <section>
+            <SectionHeader title="Address" />
+            <dl className="space-y-2">
+              <DescriptionItem 
+                label="Street" 
+                value={`${user.address.suite}, ${user.address.street}`} 
+              />
+              <DescriptionItem label="City" value={user.address.city} />
+              <DescriptionItem label="Postal Code" value={user.address.zipcode} />
+              <DescriptionItem 
+                label="Coordinates" 
+                value={`${user.address.geo.lat}°N, ${user.address.geo.lng}°E`} 
+              />
+            </dl>
+          </section>
           
-          <div>
-            <h2 className="text-xl font-semibold mb-2">Company</h2>
-            <p><strong>Name:</strong> {user.company.name}</p>
-            <p><strong>Catchphrase:</strong> {user.company.catchPhrase}</p>
-            <p><strong>Business:</strong> {user.company.bs}</p>
-          </div>
+          <section>
+            <SectionHeader title="Company" />
+            <dl className="space-y-2">
+              <DescriptionItem label="Name" value={user.company.name} />
+              <DescriptionItem label="Catchphrase" value={user.company.catchPhrase} />
+              <DescriptionItem label="Business" value={user.company.bs} />
+            </dl>
+          </section>
         </div>
-      </div>
-    </div>
+      </article>
+    </main>
   );
 };
 
