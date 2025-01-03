@@ -1,16 +1,21 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Route, BrowserRouter as Router, Routes } from 'react-router-dom';
 import { SWRConfig } from 'swr';
 import HomePage from './components/HomePage';
 import UserDetails from './components/UserDetails';
+import { getInitialData } from './services/api';
 
 const App = () => {
   return (
     <SWRConfig 
       value={{
-        revalidateOnFocus: false,
-        revalidateOnReconnect: false,
-        shouldRetryOnError: false,
-        errorRetryCount: 1
+        revalidateOnFocus: true,
+        revalidateOnReconnect: true,
+        shouldRetryOnError: true,
+        errorRetryCount: 3,
+        provider: () => new Map(),
+        fallback: {
+          '/users': getInitialData('users'),
+        }
       }}
     >
       <Router>
