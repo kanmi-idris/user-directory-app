@@ -21,6 +21,17 @@ A modern, responsive React application for managing and displaying user informat
 - **Node Version**: 20.10.0
 - **Package Manager**: Yarn 1.22.19
 
+## 🌐 API
+
+The application uses JSONPlaceholder API for user data:
+- **Base URL**: `https://jsonplaceholder.typicode.com`
+- **Endpoints**:
+  - Users: `/users` - Get all users
+  - User Details: `/users/{id}` - Get specific user
+- **Response Format**: JSON
+- **Cache Strategy**: SWR with localStorage fallback
+- **Error Handling**: Graceful degradation with error messages
+
 ## 📦 Project Structure
 
 ```
